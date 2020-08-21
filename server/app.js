@@ -1,4 +1,5 @@
 const express = require('express');
+// Node.js File System Module
 const fs = require('fs');
 const app = express();
 
@@ -7,38 +8,62 @@ const app = express();
 app.use((req, res, next) => {
 // write your logging code here
     
-    const userAgent = req.headers['user-agent'].replace(',','');
-    //console.log("userAgent", userAgent)
+    
+    var agent    = req.get('User-Agent').replace(',', ' ');
+    var time     = new Date().toISOString();
+    var method   = req.method;
+    var resource = req.url;
+    var version  = 'HTTP/' + req.httpVersion;
+    var status   = res.statusCode;
 
-    const time = new Date();
-    const userTime = time.toISOString();
-    //console.log("userTime", userTime)
+    //placeholder
+    var fullLog  = [];
 
-    const userMethod = req.method;
-    //console.log("userMethod", userMethod)
-    
-    const userURL = req.url;
-    //console.log("userURL", userURL)
-    
-    const version = 'HTTP/' + req.httpVersion;
-    //console.log("version", version)
+    fullLog.push(agent);
+    fullLog.push(time);
+    fullLog.push(method);
+    fullLog.push(resource);
+    fullLog.push(version);
+    fullLog.push(status);
+    console.log(fullLog.join(','));
 
-    const status = res.statusCode;
-    //console.log("status", status)
-    
-    const logger = userAgent + ',' + userTime + ',' + userMethod + ',' + userURL + ',' + version + ',' + status + '\n'; 
-    //console.log("logger", logger)
-    
+    //fs.appendFile(path,data[,options], callback)
+    fs.appendFile('log.csv', '\n' + fullLog + ',', function(err){
+        if(err){console.log(err);}
+    });
+
+    next();
 });
 
 app.get('/', (req, res) => {
 // write your code to respond "ok" here
-
+    res.status(200).send('ok');
 });
 
 app.get('/logs', (req, res) => {
 // write your code to return a json object containing the log data here
 
+    //placeholder
+    var logs = [];
+
+    //fs.readFile method to read files
+    fs.readFile('log.csv', 'utf8', function(err, data) {
+        var lines = data.split('\n');
+        for (let line = 1; line < lines.length; line++) {
+            var lineItems = lines[line].split(',');
+            var log = {
+                Agent: lineItems[0],
+                Time: lineItems[1],
+                Method: lineItems[2],
+                Resource: lineItems[3],
+                Version: lineItems[4],
+                Status: lineItems[5],
+            };
+            console.log(log);
+            logs.push(log);
+        };
+        res.json(logs);
+    });
 });
 
 module.exports = app;

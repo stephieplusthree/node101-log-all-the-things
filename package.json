@@ -1,23 +1,27 @@
 {
   "name": "log-all-the-things",
   "version": "1.0.0",
-  "description": "",
+  "description": "node101-log-all-the-things",
   "main": "index.js",
   "scripts": {
     "test": "mocha test --exit",
-    "start": "node server/index.js"
+    "start": "node server/index.js",
+    "server": "nodemon server.js"
   },
-  "author": "",
+  "author": "Stephanie Cragg",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.15.2"
+    "concurrently": "^5.3.0",
+    "csv-parser": "^2.3.3",
+    "csv-writer": "^1.6.0"
   },
   "devDependencies": {
     "chai": "^4.0.2",
     "chai-http": "^3.0.0",
-    "express": "^4.15.3",
+    "express": "^4.17.1",
     "mocha": "^3.4.2",
     "moment": "^2.18.1",
+    "nodemon": "^2.0.4",
     "sinon": "^2.3.8"
   }
 }
